@@ -1,4 +1,3 @@
-# .github/workflows/google-form.yml
 name: Google Form Trigger
 
 on:
@@ -8,12 +7,30 @@ on:
 jobs:
   handle-form:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      # 1️⃣ Checkout your repository
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # 2️⃣ Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Run Node.js script
-        run: node index.js
+
+      # 3️⃣ Install npm dependencies
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./  # adjust if package.json is elsewhere
+
+      # 4️⃣ Compile TypeScript
+      - name: Compile TypeScript
+        run: npx tsc
+        working-directory: ./  # adjust if tsconfig.json is elsewhere
+
+      # 5️⃣ Run the compiled script
+      - name: Run compiled script
+        run: node dist/index.js
         env:
           FORM_DATA: ${{ toJson(github.event.client_payload) }}

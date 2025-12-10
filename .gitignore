@@ -1,0 +1,6 @@
+# Files
+
+# Dirs
+.vscode/
+node_modules/
+dist/
