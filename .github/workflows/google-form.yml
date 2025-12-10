@@ -1,0 +1,20 @@
+name: Google Form Trigger
+
+on:
+  repository_dispatch:
+    types: [google_form_submission]
+
+jobs:
+  handle-form:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Run Node.js script
+        run: node index.js
+        env:
+          FORM_DATA: ${{ toJson(github.event.client_payload) }}
