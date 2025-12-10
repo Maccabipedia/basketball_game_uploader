@@ -3,4 +3,5 @@
 # Dirs
 .vscode/
 node_modules/
+env/
 dist/
