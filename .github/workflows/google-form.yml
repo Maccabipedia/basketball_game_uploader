@@ -34,3 +34,5 @@ jobs:
         run: node dist/index.js
         env:
           FORM_DATA: ${{ toJson(github.event.client_payload) }}
+          WIKI_USERNAME: ${{ secrets.WIKI_USERNAME }}
+          WIKI_PASSWORD: ${{ secrets.WIKI_PASSWORD }}
