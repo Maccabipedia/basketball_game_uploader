@@ -1,4 +1,3 @@
-import { Mwbot } from "mwbot-ts"
 import dotenv from "dotenv"
 import { ServicesProvider } from "./services/services-provider/services-provider"
 import { GAMES_TO_CHECK_COUNT } from "./consts/games-to-check-count"
@@ -9,16 +8,16 @@ dotenv.config({
         './env/maccabipedia-bot-credentials.env'
     ],
     quiet: true
-})
+});
 
-const services = new ServicesProvider()
-let bot: Mwbot
 
-services.oauth.login().then(async mpBot => {
-    bot = mpBot
-    services.logger.info('Bot logged in successfully')
+(async () => {
+    const services = new ServicesProvider()
+    if (!services.bot.bot) {
+        await services.bot.login()
+    }
 
-    await services.basketGameParser.updateLastGames(GAMES_TO_CHECK_COUNT)
-}).catch(error => {
-    services.logger.error('Failed to log in bot:', error)
-})
+    // services.basketGameParser.updateLastGames(GAMES_TO_CHECK_COUNT)
+
+    services.euroleagueGameParser.updateLastGames(GAMES_TO_CHECK_COUNT)
+})()

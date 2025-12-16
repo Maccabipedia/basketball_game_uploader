@@ -15,8 +15,33 @@ export class BasketGameParserService extends BaseService implements IBasketGameP
     SOURCE_URL = 'https://basket.co.il/pbp/json/games_all.json'
 
     public async updateLastGames(count: number): Promise<void> {
-        const gamesToCheckExistance = await this._getGamesToCheckExistance(count)
+        try {
+            const gamesToCheckExistance = await this._getGamesToCheckExistance(count)
+            const gamesExistChecker = await this.services.bot.getPageExistanceChecker(
+                gamesToCheckExistance.map(game => game.maccabipediaPageTitle)
+            )
 
+            if (!gamesExistChecker) {
+                throw new Error('Bot is not available to check games existance')
+            }
+
+            gamesToCheckExistance.forEach(async (game: IISExistGame) => {
+                if (!gamesExistChecker(game.maccabipediaPageTitle)) {
+                    try {
+                        this.services.logger.info(`Game ${game.maccabipediaPageTitle} does not exist. Uploading process started.`)
+                        await this._uploadNewGame(game)
+                    } catch (error) {
+                        this.services.logger.error(`Failed to upload new game: ${game.maccabipediaPageTitle}. Error: ${error}`, error as Error)
+                    }
+                }
+            })
+        } catch (error) {
+            this.services.logger.error(`Failed to update last games from Basket: ${error}`, error as Error)
+        }
+    }
+
+
+    private async _uploadNewGame(game: IISExistGame): Promise<void> {
         return
     }
 
@@ -56,7 +81,7 @@ export class BasketGameParserService extends BaseService implements IBasketGameP
 
                     return {
                         scrapeSourceUrl: `https://basket.co.il/game-zone.asp?GameId=${game.id}`,
-                        maccabipediaPageTitle: `כדורסל: ${date} ${home_team} נגד ${away_team} - ${competition}`
+                        maccabipediaPageTitle: `כדורסל:${date} ${home_team} נגד ${away_team} - ${competition}`
                     }
                 })
 
