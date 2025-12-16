@@ -1,0 +1,15 @@
+export const ENG_TO_HEB_TEAM_NAMES: { [key: string]: string } = {
+    'Maccabi Tel-Aviv': 'מכבי תל אביב',
+    'Hapoel Jerusalem': 'הפועל ירושלים',
+    'M. Rishon': 'מכבי ראשון לציון',
+    'Ness Ziona': 'עירוני נס ציונה',
+    'Hapoel Galil Elion': 'הפועל גליל עליון',
+    'Hapoel Haemek': 'הפועל העמק',
+    'Beer Sheva/Dimona': 'הפועל באר שבע',
+    'Hapoel Tel-Aviv': 'הפועל תל אביב',
+    'Ironi Kiryat Ata': 'עירוני קרית אתא',
+    'M. Ra;ananna': 'מכבי רעננה',
+    'Elitzur Netanya': 'אליצור עירוני נתניה',
+    'Hapoel Holon': 'הפועל חולון',
+    'Maccabi Ramat Gan': 'מכבי רמת גן',
+}
