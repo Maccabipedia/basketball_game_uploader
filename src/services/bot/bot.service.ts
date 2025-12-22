@@ -3,6 +3,7 @@ import { IBotService } from "./bot.service.interface"
 import { BaseService } from "../base.provider"
 import { ServicesProvider } from "../services-provider/services-provider"
 
+
 export class BotService extends BaseService implements IBotService {
     constructor(services: ServicesProvider) {
         super(services)
@@ -19,7 +20,7 @@ export class BotService extends BaseService implements IBotService {
         try {
             this._bot = await this.services.oauth.login()
         } catch (error) {
-            this.services.logger.error(`Failed to login bot: ${error}`, error as Error)
+            this.services.logger.error(`Failed to login bot.`, error as Error)
         }
     }
 

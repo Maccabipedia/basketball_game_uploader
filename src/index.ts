@@ -8,7 +8,7 @@ dotenv.config({
         './env/maccabipedia-bot-credentials.env'
     ],
     quiet: true
-});
+});+
 
 
 (async () => {
@@ -17,7 +17,7 @@ dotenv.config({
         await services.bot.login()
     }
 
-    // services.basketGameParser.updateLastGames(GAMES_TO_CHECK_COUNT)
+    services.basketGameParser.updateLastGames(GAMES_TO_CHECK_COUNT)
 
-    services.euroleagueGameParser.updateLastGames(GAMES_TO_CHECK_COUNT)
+    // services.euroleagueGameParser.updateLastGames(GAMES_TO_CHECK_COUNT)
 })()

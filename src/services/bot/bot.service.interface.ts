@@ -1,4 +1,5 @@
-import { ExistencePredicate, Mwbot } from "mwbot-ts";
+import { ExistencePredicate, Mwbot } from "mwbot-ts"
+
 
 export interface IBotService {
     bot: Mwbot | null

@@ -34,12 +34,12 @@ export class euroleagueGameParserService extends BaseService implements IEurolea
                         this.services.logger.info(`Game ${game.maccabipediaPageTitle} does not exist. Uploading process started.`)
                         // await this._uploadNewGame(game)
                     } catch (error) {
-                        this.services.logger.error(`Failed to upload new game: ${game.maccabipediaPageTitle}. Error: ${error}`, error as Error)
+                        this.services.logger.error(`Failed to upload new game: ${game.maccabipediaPageTitle}.`, error as Error)
                     }
                 }
             })
         } catch (error) {
-            this.services.logger.error(`Failed to update last games from Euroleague: ${error}`, error as Error)
+            this.services.logger.error(`Failed to update last games from Euroleague.`, error as Error)
         }
     }
 

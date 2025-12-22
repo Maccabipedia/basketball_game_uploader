@@ -4,6 +4,7 @@ import { IOauthService } from './oauth.service.interface'
 import { ServicesProvider } from '../services-provider/services-provider'
 import { BaseService } from '../base.provider'
 
+
 export class OauthService extends BaseService implements IOauthService {
   constructor(services: ServicesProvider) {
     super(services)
@@ -28,7 +29,7 @@ export class OauthService extends BaseService implements IOauthService {
       this.services.logger.info(`${this._username} bot initialized (login success)`)
       return bot
     } catch (error) {
-      this.services.logger.error('Failed to initialize bot (login fail)', error as Error)
+      this.services.logger.error('Failed to initialize bot (login fail).', error as Error)
       throw error
     }
   }
