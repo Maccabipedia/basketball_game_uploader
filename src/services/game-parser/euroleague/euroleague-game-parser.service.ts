@@ -3,8 +3,11 @@ import { BaseService } from "../../base.provider"
 import { ServicesProvider } from "../../services-provider/services-provider"
 import { IISExistGame } from "../isexist-game.interface"
 import { IEuroleagueGameParser } from "./euroleague-game-parser.service.interface"
-import { ENG_TO_HEB_TEAM_NAMES } from '../../../consts/english-to-hebrew-team-names'
+import { ENG_TO_HEB_TEAM_NAME_MAP } from '../../../consts/eng-to-heb-team-name-map'
 import { IIsExistGameEuroleague } from './isexist-game-euroleague.interface'
+import { WIKI_GAME_MACCABI_SCORE_KEYS, WIKI_GAME_OPPONENT_SCORE_KEYS } from '../../../consts/wiki-game-team-score-keys'
+import { ENG_TO_HEB_STADIUM_NAME_MAP } from '../../../consts/eng-to-heb-stadium-name-map'
+import { ENG_TO_HEB_REFEREE_NAME_MAP } from '../../../consts/eng-to-heb-referee-name-map'
 
 
 export class euroleagueGameParserService extends BaseService implements IEuroleagueGameParser {
@@ -32,7 +35,113 @@ export class euroleagueGameParserService extends BaseService implements IEurolea
 
 
     private async _uploadNewGame(game: IIsExistGameEuroleague): Promise<void> {
-        return
+        const isCiServer = this.services.util.isCiServer
+        try {
+            const browser = await puppeteer.launch({
+                headless: true,
+                args: isCiServer ? ['--no-sandbox', '--disable-setuid-sandbox'] : []
+            })
+
+            const page = await browser.newPage()
+            await page.goto(game.scrapeSourceUrl, {
+                waitUntil: 'domcontentloaded'
+            })
+
+
+            const rawScoreData = await page.evaluate(function () {
+                const table = document.querySelector('table.relative.shadow-regular.w-full.m-auto.xl\\:h-full')
+                if (!table) {
+                    throw new Error('No score table to scrape data from')
+                }
+
+                const rows = table.querySelectorAll('tbody tr') as NodeListOf<HTMLTableRowElement>
+                if (rows.length < 2) {
+                    throw new Error('Not enough rows on score table to scrape data from')
+                }
+
+                return Array.from(rows).map(row =>
+                    Array.from(row.querySelectorAll('td')).map(td =>
+                        td.textContent?.trim() || ''
+                    )
+                )
+            })
+
+            const maccabiRow = game.isMaccabiHomeTeam ? rawScoreData[0] : rawScoreData[1]
+            const opponentRow = game.isMaccabiHomeTeam ? rawScoreData[1] : rawScoreData[0]
+
+            const maccabiScores = this.services.gameParser.extractRowScores(maccabiRow)
+            const opponentScores = this.services.gameParser.extractRowScores(opponentRow)
+
+            const scoreBlock = this.services.gameParser.appendScoreLines(WIKI_GAME_MACCABI_SCORE_KEYS, maccabiScores)
+                + this.services.gameParser.appendScoreLines(WIKI_GAME_OPPONENT_SCORE_KEYS, opponentScores)
+
+
+            const matchInfoData = await page.evaluate(function () {
+                const elsH3 = Array.from(document.querySelectorAll('h3'))
+                const matchInfoHeader = elsH3.find(h =>
+                    h.textContent?.trim().includes('Match Information')
+                )
+
+                if (!matchInfoHeader) {
+                    throw new Error('Cannot scrape match info data')
+                }
+
+                const elsSiblingsDiv: Element[] = []
+                let current = matchInfoHeader.nextElementSibling
+
+                while (current && elsSiblingsDiv.length < 3) {
+                    elsSiblingsDiv.push(current)
+                    current = current.nextElementSibling
+                }
+
+                const getValueFromSibling = (el?: Element) =>
+                    el?.querySelector('div.text-base.font-medium')?.textContent?.trim() || ''
+
+                return {
+                    stadium: getValueFromSibling(elsSiblingsDiv[0]),
+                    crowd: getValueFromSibling(elsSiblingsDiv[1]),
+                    referees: getValueFromSibling(elsSiblingsDiv[2])
+                }
+            })
+
+            const referees = matchInfoData.referees.split(',')
+            const mainReferee = ENG_TO_HEB_REFEREE_NAME_MAP[referees[0]]
+            const assistantReferees = referees.slice(1).map(ref => ENG_TO_HEB_REFEREE_NAME_MAP[ref.trim()])
+
+
+
+
+
+
+
+            await browser.close()
+
+
+            const gameData = this.services.gameParser.parseGameData({
+                date: game.date,
+                hour: game.hour,
+                competition: 'ליגת העל',
+                fixture: this.services.util.isValidNumber(game.fixture) ? `מחזור ${game.fixture}` : '',
+                isMaccabiHomeTeam: game.isMaccabiHomeTeam,
+                opponent: ENG_TO_HEB_TEAM_NAME_MAP[game.opponent],
+                stadium: ENG_TO_HEB_STADIUM_NAME_MAP[matchInfoData.stadium],
+                maccabiScore: game.isMaccabiHomeTeam ? +game.homeTeamScore : +game.awayTeamScore,
+                opponentScore: game.isMaccabiHomeTeam ? +game.awayTeamScore : +game.homeTeamScore,
+                scoreBlock,
+                maccabiCoach: '', // TODO
+                opponentCoach: '', // TODO
+                mainReferee,
+                assistantReferees,
+                crowd: matchInfoData.crowd.replace(',', ''),
+                refernce: `[${game.scrapeSourceUrl} עמוד המשחק באתר היורוליג]`,
+                maccabiPlayersStats: '', // TODO
+                opponentPlayersStats: '' // TODO
+            })
+
+            this.services.logger.info(`Game ready to upload: ${gameData}`)
+        } catch (error) {
+            this.services.logger.error(`Could not scrape game ${game.maccabipediaPageTitle} `, error as Error)
+        }
     }
 
 
@@ -131,13 +240,13 @@ export class euroleagueGameParserService extends BaseService implements IEurolea
                             fixture
                         }
                     })
-                }, elGamesToParseHandlers, ENG_TO_HEB_TEAM_NAMES)
+                }, elGamesToParseHandlers, ENG_TO_HEB_TEAM_NAME_MAP)
 
                 await browser.close()
 
                 const gamesToCheckExistance = rawGamesData.map(game => ({
                     scrapeSourceUrl: game.scrapeSourceUrl,
-                    maccabipediaPageTitle: `כדורסל:${game.gameDate} ${ENG_TO_HEB_TEAM_NAMES[game.homeTeamName]} נגד ${ENG_TO_HEB_TEAM_NAMES[game.awayTeamName]} - יורוליג`,
+                    maccabipediaPageTitle: `כדורסל:${game.gameDate} ${ENG_TO_HEB_TEAM_NAME_MAP[game.homeTeamName]} נגד ${ENG_TO_HEB_TEAM_NAME_MAP[game.awayTeamName]} - יורוליג`,
                     date: game.gameDate,
                     hour: game.hour,
                     isMaccabiHomeTeam: game.isMaccabiHomeTeam,

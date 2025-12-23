@@ -1,4 +1,4 @@
-export const ENG_TO_HEB_TEAM_NAMES: { [key: string]: string } = {
+export const ENG_TO_HEB_TEAM_NAME_MAP: { [key: string]: string } = {
     'Maccabi Tel-Aviv': 'מכבי תל אביב',
     'Hapoel Jerusalem': 'הפועל ירושלים',
     'M. Rishon': 'מכבי ראשון לציון',

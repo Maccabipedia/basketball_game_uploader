@@ -36,6 +36,26 @@ export class GameParserService extends BaseService implements IGameParserService
     }
 
 
+    extractRowScores(cells: string[]): (number | null)[] {
+        return cells.slice(1).map(text => {
+            const val = parseInt(text.trim(), 10)
+            return Number.isNaN(val) ? null : val
+        })
+    }
+
+
+    appendScoreLines(keys: string[], scores: (number | null)[]): string {
+        let str = ''
+        for (let i = 0; i < keys.length; i++) {
+            const val = scores[i]
+            if (val !== null && val !== undefined) {
+                str += `|${keys[i]}=${val}\n`
+            }
+        }
+        return str
+    }
+
+
     parsePlayer(player: IPlayer) {
         const pointCount = this.services.util.isValidNumber(player.pointCount)
             ? player.pointCount

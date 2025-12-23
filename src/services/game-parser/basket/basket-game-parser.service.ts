@@ -3,7 +3,7 @@ import puppeteer from 'puppeteer'
 import { BaseService } from "../../base.provider"
 import { ServicesProvider } from "../../services-provider/services-provider"
 import { IBasketGameParser } from "./basket-game-parser.service.interface"
-import { ENG_TO_HEB_TEAM_NAMES } from "../../../consts/english-to-hebrew-team-names"
+import { ENG_TO_HEB_TEAM_NAME_MAP } from "../../../consts/eng-to-heb-team-name-map"
 import { BASKET_GAME_TYPE_HEB_NAME } from "../../../consts/basket-game-type-heb-name"
 import { IIsExistGameBasket } from "./isexist-game-basket.interface"
 import { WIKI_GAME_MACCABI_SCORE_KEYS, WIKI_GAME_OPPONENT_SCORE_KEYS } from "../../../consts/wiki-game-team-score-keys"
@@ -96,7 +96,7 @@ export class BasketGameParserService extends BaseService implements IBasketGameP
                 return data
             })
 
-            const scoreData = await page.evaluate(function (isMaccabiHomeTeam, WIKI_GAME_MACCABI_SCORE_KEYS, WIKI_GAME_OPPONENT_SCORE_KEYS) {
+            const rawScoreData = await page.evaluate(function () {
                 const tables = document.querySelectorAll('table.stats_tbl.categories')
                 if (!tables.length) {
                     throw new Error('No score table to scrape data from')
@@ -107,39 +107,23 @@ export class BasketGameParserService extends BaseService implements IBasketGameP
                     throw new Error('Not enough rows on score table to scrape data from')
                 }
 
-                const maccabiRow = isMaccabiHomeTeam ? rows[1] : rows[2]
-                const opponentRow = isMaccabiHomeTeam ? rows[2] : rows[1]
+                return Array.from(rows).map(row =>
+                    Array.from(row.querySelectorAll('td')).map(td =>
+                        td.textContent?.trim() || ''
+                    )
+                )
+            })
 
-                function extractRowScores(row: HTMLTableRowElement): (number | null)[] {
-                    const tds = row.querySelectorAll('td')
-                    const scores: (number | null)[] = []
+            const maccabiRow = game.isMaccabiHomeTeam ? rawScoreData[1] : rawScoreData[2]
+            const opponentRow = game.isMaccabiHomeTeam ? rawScoreData[2] : rawScoreData[1]
 
-                    // start from index 1 → ignore first td
-                    for (let i = 1; i < tds.length; i++) {
-                        const text = tds[i].textContent?.trim()
-                        const val = text ? parseInt(text, 10) : NaN
-                        scores.push(isNaN(val) ? null : val)
-                    }
+            const maccabiScores = this.services.gameParser.extractRowScores(maccabiRow)
+            const opponentScores = this.services.gameParser.extractRowScores(opponentRow)
 
-                    return scores
-                }
+            const scoreBlock = this.services.gameParser.appendScoreLines(WIKI_GAME_MACCABI_SCORE_KEYS, maccabiScores)
+                + this.services.gameParser.appendScoreLines(WIKI_GAME_OPPONENT_SCORE_KEYS, opponentScores)
 
-                const maccabiScores = extractRowScores(maccabiRow)
-                const opponentScores = extractRowScores(opponentRow)
 
-                function appendScoreLines(keys: string[], scores: (number | null)[]): string {
-                    let str = ''
-                    for (let i = 0; i < keys.length; i++) {
-                        const val = scores[i]
-                        if (val !== null && val !== undefined) {
-                            str += `|${keys[i]}=${val}\n`
-                        }
-                    }
-                    return str
-                }
-
-                return appendScoreLines(WIKI_GAME_MACCABI_SCORE_KEYS, maccabiScores) + appendScoreLines(WIKI_GAME_OPPONENT_SCORE_KEYS, opponentScores)
-            }, game.isMaccabiHomeTeam, WIKI_GAME_MACCABI_SCORE_KEYS, WIKI_GAME_OPPONENT_SCORE_KEYS)
 
             const boxScoreData = await page.evaluate(function (isMaccabiHomeTeam) {
                 const data: { [key: string]: string | any[] } = {}
@@ -248,7 +232,7 @@ export class BasketGameParserService extends BaseService implements IBasketGameP
                 stadium: headerData.stadium as string,
                 maccabiScore: game.isMaccabiHomeTeam ? game.homeTeamScore : game.awayTeamScore,
                 opponentScore: game.isMaccabiHomeTeam ? game.awayTeamScore : game.homeTeamScore,
-                scoreBlock: scoreData,
+                scoreBlock,
                 maccabiCoach: boxScoreData.maccabiCoach as string,
                 opponentCoach: boxScoreData.opponentCoach as string,
                 mainReferee: headerData.mainReferee as string,
@@ -295,8 +279,8 @@ export class BasketGameParserService extends BaseService implements IBasketGameP
                 .slice(0, count)
                 .map((game: any) => {
                     const date = game.game_date_txt.replace(/\//g, '-')
-                    const home_team = ENG_TO_HEB_TEAM_NAMES[game.team_name_eng_1]
-                    const away_team = ENG_TO_HEB_TEAM_NAMES[game.team_name_eng_2]
+                    const home_team = ENG_TO_HEB_TEAM_NAME_MAP[game.team_name_eng_1]
+                    const away_team = ENG_TO_HEB_TEAM_NAME_MAP[game.team_name_eng_2]
                     const competition = BASKET_GAME_TYPE_HEB_NAME[game.game_type]
 
                     return {

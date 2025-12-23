@@ -8,6 +8,8 @@ import { IIsExistGameEuroleague } from "./euroleague/isexist-game-euroleague.int
 export interface IGameParserService {
     getGameExistChecker(games: IIsExistGameBasket[] | IIsExistGameEuroleague[]): Promise<ExistencePredicate | undefined>
     uploadNewGame<T extends IIsExistGameBasket | IIsExistGameEuroleague>(games: T[], gameExistChecker: ExistencePredicate, uploadGame: (game: T) => Promise<void>): Promise<void>
+    extractRowScores(cells: string[]): (number | null)[]
+    appendScoreLines(keys: string[], scores: (number | null)[]): string
     parsePlayer(player: IPlayer): string
     parsePlayersArray(players: IPlayer[]): string
     parseGameData(gameData: IGameData): string
