@@ -5,6 +5,7 @@ import { IIsExistGameBasket } from "./basket/isexist-game-basket.interface"
 import { IGameParserService } from "./game-parser-service.interface"
 import { IPlayer } from "./player.interface"
 import { IGameData } from "./game-data.interface"
+import { IIsExistGameEuroleague } from "./euroleague/isexist-game-euroleague.interface"
 
 
 export class GameParserService extends BaseService implements IGameParserService {
@@ -12,7 +13,7 @@ export class GameParserService extends BaseService implements IGameParserService
         super(services)
     }
 
-    async getGameExistChecker(games: IIsExistGameBasket[]) {
+    async getGameExistChecker(games: IIsExistGameBasket[] | IIsExistGameEuroleague[]) {
         const gamesExistChecker = await this.services.bot.getPageExistanceChecker(
             games.map(game => game.maccabipediaPageTitle)
         )
@@ -21,8 +22,8 @@ export class GameParserService extends BaseService implements IGameParserService
     }
 
 
-    async uploadNewGame(games: IIsExistGameBasket[], gameExistChecker: ExistencePredicate, uploadGame: (game: IIsExistGameBasket) => Promise<void>): Promise<void> {
-        games.forEach(async (game: IIsExistGameBasket) => {
+    async uploadNewGame<T extends IIsExistGameBasket | IIsExistGameEuroleague>(games: T[], gameExistChecker: ExistencePredicate, uploadGame: (game: T) => Promise<void>): Promise<void> {
+        games.forEach(async (game: T) => {
             if (!gameExistChecker(game.maccabipediaPageTitle)) {
                 try {
                     this.services.logger.info(`Game ${game.maccabipediaPageTitle} does not exist. Uploading process started.`)

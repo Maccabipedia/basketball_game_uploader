@@ -17,7 +17,7 @@ dotenv.config({
         await services.bot.login()
     }
 
-    await services.basketGameParser.updateLastGames(GAMES_TO_CHECK_COUNT)
+    // await services.basketGameParser.updateLastGames(GAMES_TO_CHECK_COUNT)
 
-    // await services.euroleagueGameParser.updateLastGames(GAMES_TO_CHECK_COUNT)
+    await services.euroleagueGameParser.updateLastGames(GAMES_TO_CHECK_COUNT)
 })()

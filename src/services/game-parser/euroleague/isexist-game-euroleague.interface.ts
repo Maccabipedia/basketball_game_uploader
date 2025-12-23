@@ -1,11 +1,12 @@
 import { IISExistGame } from "../isexist-game.interface"
 
 
-export interface IIsExistGameBasket extends IISExistGame {
+export interface IIsExistGameEuroleague extends IISExistGame {
     date: string
     hour: string
     isMaccabiHomeTeam: boolean
     opponent: string
-    homeTeamScore: number
-    awayTeamScore: number
+    homeTeamScore: string
+    awayTeamScore: string
+    fixture: string
 }
