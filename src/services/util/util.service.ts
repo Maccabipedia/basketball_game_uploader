@@ -16,4 +16,8 @@ export class UtilService extends BaseService implements IUtilService {
     isValidString(value: any): boolean {
         return typeof value === 'string'
     }
+
+    get isCiServer(): boolean {
+        return !!process.env.CI
+    }
 }

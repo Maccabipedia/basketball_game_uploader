@@ -35,9 +35,11 @@ export class BasketGameParserService extends BaseService implements IBasketGameP
 
 
     private async _uploadNewGame(game: IIsExistGameBasket): Promise<void> {
+        const isCiServer = this.services.util.isCiServer
         try {
             const browser = await puppeteer.launch({
-                headless: true
+                headless: true,
+                args: isCiServer ? ['--no-sandbox', '--disable-setuid-sandbox'] : []
             })
 
             const page = await browser.newPage()
@@ -257,7 +259,7 @@ export class BasketGameParserService extends BaseService implements IBasketGameP
                 opponentPlayersStats: this.services.gameParser.parsePlayersArray(boxScoreData.opponentPlayersStats as IPlayer[])
             })
 
-            console.log(gameData)
+            this.services.logger.info(`Game ready to upload: ${gameData}`)
         } catch (error) {
             this.services.logger.error(`Could not scrape game ${game.maccabipediaPageTitle} `, error as Error)
         }
