@@ -8,6 +8,9 @@ import { IIsExistGameEuroleague } from './isexist-game-euroleague.interface'
 import { WIKI_GAME_MACCABI_SCORE_KEYS, WIKI_GAME_OPPONENT_SCORE_KEYS } from '../../../consts/wiki-game-team-score-keys'
 import { ENG_TO_HEB_STADIUM_NAME_MAP } from '../../../consts/eng-to-heb-stadium-name-map'
 import { ENG_TO_HEB_REFEREE_NAME_MAP } from '../../../consts/eng-to-heb-referee-name-map'
+import { ENG_TO_HEB_COACH_NAME_MAP } from '../../../consts/eng-to-heb-coach-name-map'
+import { IPlayer } from '../player.interface'
+import { ENG_TO_HEB_PLAYER_NAME_MAP } from '../../../consts/eng-to-heb-player-name-map'
 
 
 export class euroleagueGameParserService extends BaseService implements IEuroleagueGameParser {
@@ -109,9 +112,193 @@ export class euroleagueGameParserService extends BaseService implements IEurolea
             const assistantReferees = referees.slice(1).map(ref => ENG_TO_HEB_REFEREE_NAME_MAP[ref.trim()])
 
 
+            await page.goto(`${game.scrapeSourceUrl}#box-score`, {
+                waitUntil: 'domcontentloaded'
+            })
+
+            const boxScoreData = await page.evaluate((isMaccabiHomeTeam, ENG_TO_HEB_PLAYER_NAME_MAP) => {
+                const root = document.querySelector('div.max-w-full.w-game-center-content.mx-auto.flex.flex-col.gap-4.lg\\:gap-8')
+
+                if (!root) {
+                    throw new Error('Game center root not found')
+                }
+
+                const homeContainer = root.querySelector('div.relative.block')
+                const awayContainer = root.querySelector('div.hidden.relative')
+
+                if (!homeContainer || !awayContainer) {
+                    throw new Error('Home or Away container not found')
+                }
+
+                function scrapeCoach(container: Element): string {
+                    return container.querySelector(
+                        'div.flex.p-3.lg\\:p-6.gap-3.lg\\:gap-6.items-center.border-b.border-gray ' +
+                        'div.text-secondary.text-base.font-normal.flex.gap-1 ' +
+                        'div.flex.gap-1 span'
+                    )?.textContent?.trim() || ''
+                }
+
+                const homeCoach = scrapeCoach(homeContainer)
+                const awayCoach = scrapeCoach(awayContainer)
 
 
+                function normalizePlayerNameFromHref(href: string): string {
+                    const match = href.match(/players\/([^/]+)\//)
+                    if (!match) return ''
 
+                    return match[1]
+                        .split('-')
+                        .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+                        .join(' ')
+                }
+
+                function scrapePlayers(container: Element) {
+                    const players: IPlayer[] = []
+                    const identityTable = container.querySelector('table')
+                    const identityRows = identityTable?.querySelectorAll('tbody tr')
+
+                    if (!identityRows || identityRows.length < 3) return players
+
+                    const validIdentityRows = Array.from(identityRows).slice(0, -2)
+
+                    for (const row of validIdentityRows) {
+                        const player: any = {}
+
+                        const infoDiv = row.querySelector('div.flex.w-full.gap-1')
+                        if (!infoDiv) continue
+
+                        // number
+                        const numberSpan = infoDiv.querySelector(':scope > span')
+                        const numberText = numberSpan?.textContent?.trim()
+                        player.number = numberText ? parseInt(numberText, 10) : null
+
+                        // name
+                        const anchor = infoDiv.querySelector('a')
+                        player.name = anchor?.getAttribute('href')
+                            ? ENG_TO_HEB_PLAYER_NAME_MAP[normalizePlayerNameFromHref(anchor.getAttribute('href')!)]
+                            : ''
+
+                        // starting five
+                        player.isStartingFive = Array.from(infoDiv.querySelectorAll('a span'))
+                            .some(span => span.textContent?.trim() === '*')
+
+                        players.push(player)
+                    }
+
+                    const statsWrapper = container.querySelector(
+                        'div.grid.grid-cols-\\[auto\\,1fr\\].w-full.border-b.border-gray ' +
+                        'div.flex.w-full.overflow-x-auto'
+                    )
+
+                    if (!statsWrapper) return players
+
+                    const statTables = Array.from(
+                        statsWrapper.querySelectorAll(':scope > div table')
+                    )
+
+                    function validRowsFromTable(table?: Element) {
+                        const rows = table?.querySelectorAll('tbody tr')
+                        return rows ? Array.from(rows).slice(0, -2) : []
+                    }
+
+                    validRowsFromTable(statTables[0]).forEach((row, i) => {
+                        const tds = row.querySelectorAll('td')
+                        const player = players[i]
+                        if (!player || tds.length < 2) return
+
+                        const time = tds[0].textContent?.trim() || ''
+                        if (time === '00:00') {
+                            player.didNotPlayed = true
+                            player.minuteCount = 0
+                        } else {
+                            const [mm, ss] = time.split(':').map(v => parseInt(v, 10))
+                            if (!isNaN(mm)) {
+                                player.minuteCount = ss > 0 ? mm + 1 : mm
+                            }
+                        }
+
+                        player.pointCount = parseInt(tds[1].textContent || '0', 10)
+                    })
+
+                    validRowsFromTable(statTables[1]).forEach((row, i) => {
+                        const td = row.querySelector('td')
+                        const player = players[i]
+                        if (!player || !td) return
+
+                        const [a, s] = td.textContent!.split('/').map(v => parseInt(v, 10))
+                        player.fieldThrowsAttempt = a
+                        player.fieldThrowsScored = s
+                    })
+
+                    validRowsFromTable(statTables[2]).forEach((row, i) => {
+                        const td = row.querySelector('td')
+                        const player = players[i]
+                        if (!player || !td) return
+
+                        const [a, s] = td.textContent!.split('/').map(v => parseInt(v, 10))
+                        player.threeThrowsAttempt = a
+                        player.threeThrowsScored = s
+                    })
+
+                    validRowsFromTable(statTables[3]).forEach((row, i) => {
+                        const td = row.querySelector('td')
+                        const player = players[i]
+                        if (!player || !td) return
+
+                        const [a, s] = td.textContent!.split('/').map(v => parseInt(v, 10))
+                        player.freeThrowsAttempt = a
+                        player.freeThrowsScored = s
+                    })
+
+                    validRowsFromTable(statTables[4]).forEach((row, i) => {
+                        const tds = row.querySelectorAll('td')
+                        const player = players[i]
+                        if (!player || tds.length < 2) return
+
+                        player.offensiveRebound = parseInt(tds[0].textContent || '0', 10)
+                        player.defensiveRebound = parseInt(tds[1].textContent || '0', 10)
+                    })
+
+                    validRowsFromTable(statTables[5]).forEach((row, i) => {
+                        const tds = row.querySelectorAll('td')
+                        const player = players[i]
+                        if (!player || tds.length < 3) return
+
+                        player.assist = parseInt(tds[0].textContent || '0', 10)
+                        player.steal = parseInt(tds[1].textContent || '0', 10)
+                        player.turnover = parseInt(tds[2].textContent || '0', 10)
+                    })
+
+                    validRowsFromTable(statTables[6]).forEach((row, i) => {
+                        const td = row.querySelector('td')
+                        const player = players[i]
+                        if (!player || !td) return
+
+                        player.block = parseInt(td.textContent || '0', 10)
+                    })
+
+                    validRowsFromTable(statTables[7]).forEach((row, i) => {
+                        const td = row.querySelector('td')
+                        const player = players[i]
+                        if (!player || !td) return
+
+                        player.foul = parseInt(td.textContent || '0', 10)
+                    })
+
+                    return players
+                }
+
+                const homePlayers = scrapePlayers(homeContainer)
+                const awayPlayers = scrapePlayers(awayContainer)
+
+                return {
+                    maccabiCoach: isMaccabiHomeTeam ? homeCoach : awayCoach,
+                    opponentCoach: isMaccabiHomeTeam ? awayCoach : homeCoach,
+                    maccabiPlayersStats: isMaccabiHomeTeam ? homePlayers : awayPlayers,
+                    opponentPlayersStats: isMaccabiHomeTeam ? awayPlayers : homePlayers
+                }
+
+            }, game.isMaccabiHomeTeam, ENG_TO_HEB_PLAYER_NAME_MAP)
 
 
             await browser.close()
@@ -128,14 +315,14 @@ export class euroleagueGameParserService extends BaseService implements IEurolea
                 maccabiScore: game.isMaccabiHomeTeam ? +game.homeTeamScore : +game.awayTeamScore,
                 opponentScore: game.isMaccabiHomeTeam ? +game.awayTeamScore : +game.homeTeamScore,
                 scoreBlock,
-                maccabiCoach: '', // TODO
-                opponentCoach: '', // TODO
+                maccabiCoach: ENG_TO_HEB_COACH_NAME_MAP[boxScoreData.maccabiCoach],
+                opponentCoach: ENG_TO_HEB_COACH_NAME_MAP[boxScoreData.opponentCoach],
                 mainReferee,
                 assistantReferees,
                 crowd: matchInfoData.crowd.replace(',', ''),
                 refernce: `[${game.scrapeSourceUrl} עמוד המשחק באתר היורוליג]`,
-                maccabiPlayersStats: '', // TODO
-                opponentPlayersStats: '' // TODO
+                maccabiPlayersStats: this.services.gameParser.parsePlayersArray(boxScoreData.maccabiPlayersStats as IPlayer[]),
+                opponentPlayersStats: this.services.gameParser.parsePlayersArray(boxScoreData.opponentPlayersStats as IPlayer[])
             })
 
             this.services.logger.info(`Game ready to upload: ${gameData}`)

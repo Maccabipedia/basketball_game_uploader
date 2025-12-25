@@ -4,18 +4,18 @@ export interface IPlayer {
     minuteCount: number | null
     pointCount: number | null
     isStartingFive: boolean
-    freeThrowsAttempts: number | null
+    freeThrowsAttempt: number | null
     freeThrowsScored: number | null
-    fieldThrowsAttempts: number | null
+    fieldThrowsAttempt: number | null
     fieldThrowsScored: number | null
-    threeThrowsAttempts: number | null
+    threeThrowsAttempt: number | null
     threeThrowsScored: number | null
-    defensiveRebounds: number | null
-    offensiveRebounds: number | null
-    personalTotalFouls: number | null
-    steals: number | null
-    turnovers: number | null
-    assists: number | null
-    blocks: number | null
+    defensiveRebound: number | null
+    offensiveRebound: number | null
+    foul: number | null
+    steal: number | null
+    turnover: number | null
+    assist: number | null
+    block: number | null
     didNotPlayed?: boolean
 }

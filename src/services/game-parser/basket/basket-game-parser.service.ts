@@ -193,19 +193,19 @@ export class BasketGameParserService extends BaseService implements IBasketGameP
                             isStartingFive: !!tds[2].textContent?.trim(),
                             minuteCount: toInt(tds[3].textContent),
                             pointCount: toInt(tds[4].textContent),
-                            fieldThrowsAttempts: fg.a,
+                            fieldThrowsAttempt: fg.a,
                             fieldThrowsScored: fg.s,
-                            threeThrowsAttempts: tg.a,
+                            threeThrowsAttempt: tg.a,
                             threeThrowsScored: tg.s,
-                            freeThrowsAttempts: ft.a,
+                            freeThrowsAttempt: ft.a,
                             freeThrowsScored: ft.s,
-                            defensiveRebounds: toInt(tds[11].textContent),
-                            offensiveRebounds: toInt(tds[12].textContent),
-                            personalTotalFouls: toInt(tds[14].textContent),
-                            steals: toInt(tds[16].textContent),
-                            turnovers: toInt(tds[17].textContent),
-                            assists: toInt(tds[18].textContent),
-                            blocks: toInt(tds[19].textContent)
+                            defensiveRebound: toInt(tds[11].textContent),
+                            offensiveRebound: toInt(tds[12].textContent),
+                            foul: toInt(tds[14].textContent),
+                            steal: toInt(tds[16].textContent),
+                            turnover: toInt(tds[17].textContent),
+                            assist: toInt(tds[18].textContent),
+                            block: toInt(tds[19].textContent)
                         })
                     }
 
