@@ -1,4 +1,5 @@
 export const ENG_TO_HEB_TEAM_NAME_MAP: { [key: string]: string } = {
+    // Israel's teams
     'Maccabi Tel-Aviv': 'מכבי תל אביב',
     'Hapoel Jerusalem': 'הפועל ירושלים',
     'M. Rishon': 'מכבי ראשון לציון',
@@ -12,20 +13,20 @@ export const ENG_TO_HEB_TEAM_NAME_MAP: { [key: string]: string } = {
     'Elitzur Netanya': 'אליצור עירוני נתניה',
     'Hapoel Holon': 'הפועל חולון',
     'Maccabi Ramat Gan': 'מכבי רמת גן',
-    'Hapoel IBI Tel Aviv': 'הפועל תל אביב',
 
 
-
+    // Foreign teams
     'Valencia Basket': 'ולנסיה',
+    'Hapoel IBI Tel Aviv': 'הפועל תל אביב',
     'FC Barcelona': 'ברצלונה',
     'Fenerbahce Beko Istanbul': 'פנרבחצ\'ה',
-    'AS Monaco': 'מונאקו',
+    'AS Monaco': 'מונקו',
     'Zalgiris Kaunas': 'ז\'לגיריס קובנה',
-    'Crvena Zvezda Meridianbet Belgrade': 'הכוכב האדום בלגרס',
+    'Crvena Zvezda Meridianbet Belgrade': 'הכוכב האדום בלגרד',
     'Panathinaikos AKTOR Athens': 'פנאתינייקוס',
     'Real Madrid': 'ריאל מדריד',
     'Olympiacos Piraeus': 'אולימפיאקוס',
-    'EA7 Emporio Armani Milan': 'מילאנו',
+    'EA7 Emporio Armani Milan': 'ארמאני מילאנו',
     'Dubai Basketball': 'דובאי',
     'Virtus Bologna': 'וירטוס בולוניה',
     'Partizan Mozzart Bet Belgrade': 'פרטיזן בלגרד',
@@ -34,5 +35,5 @@ export const ENG_TO_HEB_TEAM_NAME_MAP: { [key: string]: string } = {
     'Kosner Baskonia Vitoria-Gasteiz': 'בסקוניה',
     'Anadolu Efes Istanbul': 'אנאדולו אפס',
     'FC Bayern Munich': 'באיירן מינכן',
-    'LDLC ASVEL Villeurbanne': 'ליון-וילרבן'
+    'LDLC ASVEL Villeurbanne': 'ליון-וילרבאן'
 }

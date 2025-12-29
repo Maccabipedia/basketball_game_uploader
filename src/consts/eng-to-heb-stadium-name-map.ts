@@ -1,4 +1,20 @@
 export const ENG_TO_HEB_STADIUM_NAME_MAP: { [key: string]: string } = {
     'PAIS ARENA JERUSALEM': 'פיס ארנה',
-    'MENORA MIVTACHIM ARENA': 'היכל מנורה מבטחים'
+    'MENORA MIVTACHIM ARENA': 'היכל מנורה מבטחים',
+    'ZALGIRIO ARENA': 'ז\'לגיריס ארנה',
+    'ALEKSANDAR NIKOLIC HALL': 'היכל פיוניר',
+    'PALADOZZA': 'פאלאדוסה',
+    'SAP GARDEN': 'SAP גארדן',
+    'TELEKOM CENTER ATHENS': 'ההיכל האולימפי (אואקה)',
+    'ARENA 8888 SOFIA': 'ארנה ארמייץ',
+    'MORACA': 'מוראבה',
+    '': '',
+    '': '',
+    '': '',
+    '': '',
+    '': '',
+    '': '',
+    '': '',
+    '': '',
+    '': '',
 }

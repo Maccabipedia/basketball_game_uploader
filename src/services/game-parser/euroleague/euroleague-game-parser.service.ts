@@ -1,16 +1,13 @@
 import puppeteer from 'puppeteer'
 import { BaseService } from "../../base.provider"
 import { ServicesProvider } from "../../services-provider/services-provider"
-import { IISExistGame } from "../isexist-game.interface"
 import { IEuroleagueGameParser } from "./euroleague-game-parser.service.interface"
 import { ENG_TO_HEB_TEAM_NAME_MAP } from '../../../consts/eng-to-heb-team-name-map'
 import { IIsExistGameEuroleague } from './isexist-game-euroleague.interface'
 import { WIKI_GAME_MACCABI_SCORE_KEYS, WIKI_GAME_OPPONENT_SCORE_KEYS } from '../../../consts/wiki-game-team-score-keys'
 import { ENG_TO_HEB_STADIUM_NAME_MAP } from '../../../consts/eng-to-heb-stadium-name-map'
-import { ENG_TO_HEB_REFEREE_NAME_MAP } from '../../../consts/eng-to-heb-referee-name-map'
-import { ENG_TO_HEB_COACH_NAME_MAP } from '../../../consts/eng-to-heb-coach-name-map'
 import { IPlayer } from '../player.interface'
-import { ENG_TO_HEB_PLAYER_NAME_MAP } from '../../../consts/eng-to-heb-player-name-map'
+import { ENG_TO_HEB_PERSON_NAME_MAP } from '../../../consts/eng-to-heb-person-name-map'
 
 
 export class euroleagueGameParserService extends BaseService implements IEuroleagueGameParser {
@@ -108,15 +105,15 @@ export class euroleagueGameParserService extends BaseService implements IEurolea
             })
 
             const referees = matchInfoData.referees.split(',')
-            const mainReferee = ENG_TO_HEB_REFEREE_NAME_MAP[referees[0]]
-            const assistantReferees = referees.slice(1).map(ref => ENG_TO_HEB_REFEREE_NAME_MAP[ref.trim()])
+            const mainReferee = ENG_TO_HEB_PERSON_NAME_MAP[referees[0]]
+            const assistantReferees = referees.slice(1).map(ref => ENG_TO_HEB_PERSON_NAME_MAP[ref.trim()])
 
 
             await page.goto(`${game.scrapeSourceUrl}#box-score`, {
                 waitUntil: 'domcontentloaded'
             })
 
-            const boxScoreData = await page.evaluate((isMaccabiHomeTeam, ENG_TO_HEB_PLAYER_NAME_MAP) => {
+            const boxScoreData = await page.evaluate((isMaccabiHomeTeam, ENG_TO_HEB_PERSON_NAME_MAP) => {
                 const root = document.querySelector('div.max-w-full.w-game-center-content.mx-auto.flex.flex-col.gap-4.lg\\:gap-8')
 
                 if (!root) {
@@ -175,7 +172,7 @@ export class euroleagueGameParserService extends BaseService implements IEurolea
                         // name
                         const anchor = infoDiv.querySelector('a')
                         player.name = anchor?.getAttribute('href')
-                            ? ENG_TO_HEB_PLAYER_NAME_MAP[normalizePlayerNameFromHref(anchor.getAttribute('href')!)]
+                            ? ENG_TO_HEB_PERSON_NAME_MAP[normalizePlayerNameFromHref(anchor.getAttribute('href')!)]
                             : ''
 
                         // starting five
@@ -298,7 +295,7 @@ export class euroleagueGameParserService extends BaseService implements IEurolea
                     opponentPlayersStats: isMaccabiHomeTeam ? awayPlayers : homePlayers
                 }
 
-            }, game.isMaccabiHomeTeam, ENG_TO_HEB_PLAYER_NAME_MAP)
+            }, game.isMaccabiHomeTeam, ENG_TO_HEB_PERSON_NAME_MAP)
 
 
             await browser.close()
@@ -315,8 +312,8 @@ export class euroleagueGameParserService extends BaseService implements IEurolea
                 maccabiScore: game.isMaccabiHomeTeam ? +game.homeTeamScore : +game.awayTeamScore,
                 opponentScore: game.isMaccabiHomeTeam ? +game.awayTeamScore : +game.homeTeamScore,
                 scoreBlock,
-                maccabiCoach: ENG_TO_HEB_COACH_NAME_MAP[boxScoreData.maccabiCoach],
-                opponentCoach: ENG_TO_HEB_COACH_NAME_MAP[boxScoreData.opponentCoach],
+                maccabiCoach: ENG_TO_HEB_PERSON_NAME_MAP[boxScoreData.maccabiCoach],
+                opponentCoach: ENG_TO_HEB_PERSON_NAME_MAP[boxScoreData.opponentCoach],
                 mainReferee,
                 assistantReferees,
                 crowd: matchInfoData.crowd.replace(',', ''),
