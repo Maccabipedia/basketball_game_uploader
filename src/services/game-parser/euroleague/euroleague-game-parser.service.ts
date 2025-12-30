@@ -105,8 +105,8 @@ export class euroleagueGameParserService extends BaseService implements IEurolea
             })
 
             const referees = matchInfoData.referees.split(',')
-            const mainReferee = ENG_TO_HEB_PERSON_NAME_MAP[referees[0]]
-            const assistantReferees = referees.slice(1).map(ref => ENG_TO_HEB_PERSON_NAME_MAP[ref.trim()])
+            const mainReferee = ENG_TO_HEB_PERSON_NAME_MAP[referees[0]] || referees[0]
+            const assistantReferees = referees.slice(1).map(ref => ENG_TO_HEB_PERSON_NAME_MAP[ref.trim()] || ref.trim())
 
 
             await page.goto(`${game.scrapeSourceUrl}#box-score`, {
@@ -171,8 +171,9 @@ export class euroleagueGameParserService extends BaseService implements IEurolea
 
                         // name
                         const anchor = infoDiv.querySelector('a')
+                        const normalizedName = normalizePlayerNameFromHref(anchor?.getAttribute('href')!)
                         player.name = anchor?.getAttribute('href')
-                            ? ENG_TO_HEB_PERSON_NAME_MAP[normalizePlayerNameFromHref(anchor.getAttribute('href')!)]
+                            ? ENG_TO_HEB_PERSON_NAME_MAP[normalizedName] || normalizedName
                             : ''
 
                         // starting five
@@ -308,12 +309,12 @@ export class euroleagueGameParserService extends BaseService implements IEurolea
                 fixture: this.services.util.isValidNumber(game.fixture) ? `מחזור ${game.fixture}` : '',
                 isMaccabiHomeTeam: game.isMaccabiHomeTeam,
                 opponent: ENG_TO_HEB_TEAM_NAME_MAP[game.opponent],
-                stadium: ENG_TO_HEB_STADIUM_NAME_MAP[matchInfoData.stadium],
+                stadium: ENG_TO_HEB_STADIUM_NAME_MAP[matchInfoData.stadium] || matchInfoData.stadium,
                 maccabiScore: game.isMaccabiHomeTeam ? +game.homeTeamScore : +game.awayTeamScore,
                 opponentScore: game.isMaccabiHomeTeam ? +game.awayTeamScore : +game.homeTeamScore,
                 scoreBlock,
-                maccabiCoach: ENG_TO_HEB_PERSON_NAME_MAP[boxScoreData.maccabiCoach],
-                opponentCoach: ENG_TO_HEB_PERSON_NAME_MAP[boxScoreData.opponentCoach],
+                maccabiCoach: ENG_TO_HEB_PERSON_NAME_MAP[boxScoreData.maccabiCoach] || boxScoreData.maccabiCoach,
+                opponentCoach: ENG_TO_HEB_PERSON_NAME_MAP[boxScoreData.opponentCoach] || boxScoreData.opponentCoach,
                 mainReferee,
                 assistantReferees,
                 crowd: matchInfoData.crowd.replace(',', ''),
@@ -323,6 +324,8 @@ export class euroleagueGameParserService extends BaseService implements IEurolea
             })
 
             this.services.logger.info(`Game ready to upload: ${gameData}`)
+
+            this.services.bot.uploadPage(game.maccabipediaPageTitle, gameData)
         } catch (error) {
             this.services.logger.error(`Could not scrape game ${game.maccabipediaPageTitle} `, error as Error)
         }

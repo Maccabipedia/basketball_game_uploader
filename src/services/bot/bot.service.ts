@@ -28,4 +28,16 @@ export class BotService extends BaseService implements IBotService {
     public async getPageExistanceChecker(pageTitles: string[]): Promise<ExistencePredicate | undefined> {
         return await this.services.bot.bot?.getExistencePredicate(pageTitles)
     }
+
+
+    public async uploadPage(title: string, content: string): Promise<void> {
+        try {
+            if (!this.bot) throw new Error('Bot not logged in')
+
+            await this.bot.create(title, content)
+            this.services.logger.info(`Page created: ${title}`)
+        } catch (error) {
+            this.services.logger.error(`Failed to upload page.`, error as Error)
+        }
+    }
 }

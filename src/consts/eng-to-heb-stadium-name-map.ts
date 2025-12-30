@@ -8,7 +8,7 @@ export const ENG_TO_HEB_STADIUM_NAME_MAP: { [key: string]: string } = {
     'TELEKOM CENTER ATHENS': 'ההיכל האולימפי (אואקה)',
     'ARENA 8888 SOFIA': 'ארנה ארמייץ',
     'MORACA': 'מוראבה',
-    '': '',
+    'BELGRADE ARENA': 'בלגרד ארנה',
     '': '',
     '': '',
     '': '',

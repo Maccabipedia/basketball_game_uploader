@@ -1,1 +1,1 @@
-export const GAMES_TO_CHECK_COUNT = 1
+export const GAMES_TO_CHECK_COUNT = 3

@@ -32,7 +32,7 @@ export const ENG_TO_HEB_PERSON_NAME_MAP: { [key: string]: string } = {
     'Jimmy Clark Iii': 'ג\'ימי קלארק',
     'Marcio Santos': 'מרסיו סנטוס',
     'Lonnie Walker Iv': 'לוני ווקר',
-    'Roman Sorking': 'רומן סורקין',
+    'Roman Sorkin': 'רומן סורקין',
     'O Shae J Brissett': 'אושיי בריסט',
     'William Rayman': 'וויל ריימן',
     'John Dibartolomeo': 'ג\'ון דיברתולומיאו',
@@ -249,6 +249,18 @@ export const ENG_TO_HEB_PERSON_NAME_MAP: { [key: string]: string } = {
     'Ercan Osmani': 'ארקן אוסמני',
     'Erkan Yilmaz': 'ארקאן יילמאז',
     'Kai Jones': 'קאי ג\'ונס',
+    'Dylan Osetkowski': 'דילן אוסטקובסקי',
+    'Vanja Marinkovic': 'ואניה מרינקוביץ\'',
+    'Sterling Brown': 'סטרלינג בראון',
+    'Cameron Payne': 'קמרון פיין',
+    'Bruno Fernando': 'ברונו פרננדו',
+    'Miikka Muurinen': 'מיקה מיורינן',
+    'Duane Washington': 'דוויין וושינגטון',
+    'Isaac Bonga': 'אייזק בונגה',
+    'Arijan Lakic': 'אריאן לאקיץ\'',
+    'Jabari Parker': 'ג\'בארי פארקר',
+    'Nick Calathes': 'ניק קלאת\'ס',
+    'Tyrique Jones': 'טייריק ג\'ונס',
 
 
     // Referees
@@ -290,4 +302,5 @@ export const ENG_TO_HEB_PERSON_NAME_MAP: { [key: string]: string } = {
     'Emilio Perez': 'אמיליו פרז',
     'Piotr Pastusiak': 'פיוטר פסטוסייק',
     'Tomasz Trawicki': 'תומאש טראוויצקי',
+    'Arturas Sukys': 'ארטוראס שוקיס'
 }
