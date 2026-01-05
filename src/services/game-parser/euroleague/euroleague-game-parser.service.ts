@@ -305,8 +305,8 @@ export class euroleagueGameParserService extends BaseService implements IEurolea
             const gameData = this.services.gameParser.parseGameData({
                 date: game.date,
                 hour: game.hour,
-                competition: 'ליגת העל',
-                fixture: this.services.util.isValidNumber(game.fixture) ? `מחזור ${game.fixture}` : '',
+                competition: 'יורוליג',
+                fixture: this.services.util.isValidNumber(+game.fixture) ? `מחזור ${game.fixture}` : '',
                 isMaccabiHomeTeam: game.isMaccabiHomeTeam,
                 opponent: ENG_TO_HEB_TEAM_NAME_MAP[game.opponent],
                 stadium: ENG_TO_HEB_STADIUM_NAME_MAP[matchInfoData.stadium] || matchInfoData.stadium,
@@ -325,7 +325,7 @@ export class euroleagueGameParserService extends BaseService implements IEurolea
 
             this.services.logger.info(`Game ready to upload: ${gameData}`)
 
-            this.services.bot.uploadPage(game.maccabipediaPageTitle, gameData)
+            // this.services.bot.uploadPage(game.maccabipediaPageTitle, gameData)
         } catch (error) {
             this.services.logger.error(`Could not scrape game ${game.maccabipediaPageTitle} `, error as Error)
         }
