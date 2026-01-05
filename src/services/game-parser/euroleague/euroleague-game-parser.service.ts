@@ -325,7 +325,7 @@ export class euroleagueGameParserService extends BaseService implements IEurolea
 
             this.services.logger.info(`Game ready to upload: ${gameData}`)
 
-            // this.services.bot.uploadPage(game.maccabipediaPageTitle, gameData)
+            this.services.bot.uploadPage(game.maccabipediaPageTitle, gameData)
         } catch (error) {
             this.services.logger.error(`Could not scrape game ${game.maccabipediaPageTitle} `, error as Error)
         }
