@@ -105,7 +105,7 @@ export class GameParserService extends BaseService implements IGameParserService
 |תאריך המשחק=${gameData.date}
 |שעת המשחק=${gameData.hour}
 |עונה=2025/26
-|מפעל=ליגת העל
+|מפעל=${gameData.competition}
 |שלב במפעל=${gameData.fixture}
 |בית חוץ=${gameData.isMaccabiHomeTeam ? 'בית' : 'חוץ'}
 |שם יריבה=${gameData.opponent}
