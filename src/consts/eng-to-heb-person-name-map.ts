@@ -25,6 +25,7 @@ export const ENG_TO_HEB_PERSON_NAME_MAP: { [key: string]: string } = {
     'Francesco Tabellini': 'פרנצ\'סקו טאבליני',
     'Igor Kokoskov': 'איגור קוקושקוב',
     'Svetislav Pesic': 'סבטיסלב פשיץ\'',
+    'Xavi Pascual': 'צ\'אבי פסקואל',
 
 
     // Maccabi players
@@ -274,6 +275,8 @@ export const ENG_TO_HEB_PERSON_NAME_MAP: { [key: string]: string } = {
     'Justinian Jessup': 'ג׳אסטיניאן ג\'סאפ',
     'Stefan Jovic': 'סטפן יוביץ\'',
     'Wenyen Gabriel': 'ווניין גבריאל',
+    'Youssoupha Fall': 'יוסופה פאל',
+    'Nicolas Laprovittola': 'ניקולאס לפרוויטולה',
 
 
     // Referees
@@ -316,5 +319,7 @@ export const ENG_TO_HEB_PERSON_NAME_MAP: { [key: string]: string } = {
     'Piotr Pastusiak': 'פיוטר פסטוסייק',
     'Tomasz Trawicki': 'תומאש טראוויצקי',
     'Arturas Sukys': 'ארטוראס שוקיס',
-    'Robert Vyklicky': 'רוברט ויקליצקי'
+    'Robert Vyklicky': 'רוברט ויקליצקי',
+    'Hugues Thepenier': 'איג תפנייה',
+    'Stefan Calic': 'סטפן קאליץ\'',
 }

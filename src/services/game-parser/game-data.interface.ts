@@ -13,7 +13,7 @@ export interface IGameData {
     opponentCoach: string
     mainReferee: string
     assistantReferees: string[]
-    crowd: string
+    crowd: string | undefined
     refernce: string
     maccabiPlayersStats: string
     opponentPlayersStats: string

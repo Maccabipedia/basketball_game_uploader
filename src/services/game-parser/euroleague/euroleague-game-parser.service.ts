@@ -97,11 +97,16 @@ export class euroleagueGameParserService extends BaseService implements IEurolea
                 const getValueFromSibling = (el?: Element) =>
                     el?.querySelector('div.text-base.font-medium')?.textContent?.trim() || ''
 
-                return {
-                    stadium: getValueFromSibling(elsSiblingsDiv[0]),
-                    crowd: getValueFromSibling(elsSiblingsDiv[1]),
-                    referees: getValueFromSibling(elsSiblingsDiv[2])
-                }
+                return elsSiblingsDiv.length < 3
+                    ? {
+                        stadium: getValueFromSibling(elsSiblingsDiv[0]),
+                        referees: getValueFromSibling(elsSiblingsDiv[1])
+                    }
+                    : {
+                        stadium: getValueFromSibling(elsSiblingsDiv[0]),
+                        crowd: getValueFromSibling(elsSiblingsDiv[1]),
+                        referees: getValueFromSibling(elsSiblingsDiv[2])
+                    }
             })
 
             const referees = matchInfoData.referees.split(',')
@@ -317,7 +322,7 @@ export class euroleagueGameParserService extends BaseService implements IEurolea
                 opponentCoach: ENG_TO_HEB_PERSON_NAME_MAP[boxScoreData.opponentCoach] || boxScoreData.opponentCoach,
                 mainReferee,
                 assistantReferees,
-                crowd: matchInfoData.crowd.replace(',', ''),
+                crowd: matchInfoData?.crowd?.replace(',', '') || '',
                 refernce: `[${game.scrapeSourceUrl} עמוד המשחק באתר היורוליג]`,
                 maccabiPlayersStats: this.services.gameParser.parsePlayersArray(boxScoreData.maccabiPlayersStats as IPlayer[]),
                 opponentPlayersStats: this.services.gameParser.parsePlayersArray(boxScoreData.opponentPlayersStats as IPlayer[])
@@ -325,7 +330,7 @@ export class euroleagueGameParserService extends BaseService implements IEurolea
 
             this.services.logger.info(`Game ready to upload: ${gameData}`)
 
-            this.services.bot.uploadPage(game.maccabipediaPageTitle, gameData)
+            // this.services.bot.uploadPage(game.maccabipediaPageTitle, gameData)
         } catch (error) {
             this.services.logger.error(`Could not scrape game ${game.maccabipediaPageTitle} `, error as Error)
         }
