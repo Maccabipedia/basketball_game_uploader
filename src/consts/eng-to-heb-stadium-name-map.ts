@@ -11,7 +11,7 @@ export const ENG_TO_HEB_STADIUM_NAME_MAP: { [key: string]: string } = {
     'BELGRADE ARENA': 'בלגרד ארנה',
     'COCA-COLA ARENA': 'קוקה קולה ארנה',
     'PALAU BLAUGRANA': 'פלאו בלאוגרנה',
-    '': '',
+    'MOVISTAR ARENA': 'ארמון הספורט של קהילת מדריד',
     '': '',
     '': '',
     '': '',

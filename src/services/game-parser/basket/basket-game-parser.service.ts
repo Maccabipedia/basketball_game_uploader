@@ -8,6 +8,7 @@ import { BASKET_GAME_TYPE_HEB_NAME } from "../../../consts/basket-game-type-heb-
 import { IIsExistGameBasket } from "./isexist-game-basket.interface"
 import { WIKI_GAME_MACCABI_SCORE_KEYS, WIKI_GAME_OPPONENT_SCORE_KEYS } from "../../../consts/wiki-game-team-score-keys"
 import { IPlayer } from "../player.interface"
+import { HEB_NAME_NORMALIZE_MAP } from "../../../consts/heb-name-normalize-map"
 
 
 export class BasketGameParserService extends BaseService implements IBasketGameParser {
@@ -125,7 +126,7 @@ export class BasketGameParserService extends BaseService implements IBasketGameP
 
 
 
-            const boxScoreData = await page.evaluate(function (isMaccabiHomeTeam) {
+            const boxScoreData = await page.evaluate(function (isMaccabiHomeTeam, HEB_NAME_NORMALIZE_MAP) {
                 const data: { [key: string]: string | any[] } = {}
 
                 const tables = document.querySelectorAll('table.stats_tbl')
@@ -187,9 +188,11 @@ export class BasketGameParserService extends BaseService implements IBasketGameP
                         const tg = splitStat(tds[7]?.textContent)
                         const ft = splitStat(tds[9]?.textContent)
 
+                        const playerName = tds[1].querySelector('a')?.textContent?.trim() || ''
+
                         players.push({
                             number: toInt(tds[0].querySelector('a')?.textContent),
-                            name: tds[1].querySelector('a')?.textContent?.trim() || '',
+                            name: HEB_NAME_NORMALIZE_MAP[playerName] || playerName,
                             isStartingFive: !!tds[2].textContent?.trim(),
                             minuteCount: toInt(tds[3].textContent),
                             pointCount: toInt(tds[4].textContent),
@@ -216,7 +219,7 @@ export class BasketGameParserService extends BaseService implements IBasketGameP
                 data.opponentPlayersStats = extractPlayersStats(opponentTable)
 
                 return data
-            }, game.isMaccabiHomeTeam)
+            }, game.isMaccabiHomeTeam, HEB_NAME_NORMALIZE_MAP)
 
 
             await browser.close()

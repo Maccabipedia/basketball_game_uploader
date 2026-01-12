@@ -277,6 +277,10 @@ export const ENG_TO_HEB_PERSON_NAME_MAP: { [key: string]: string } = {
     'Wenyen Gabriel': 'ווניין גבריאל',
     'Youssoupha Fall': 'יוסופה פאל',
     'Nicolas Laprovittola': 'ניקולאס לפרוויטולה',
+    'Sergio Llull ': 'סרחיו יוי',
+    'Andres Feliz ': 'אנדרס פליס',
+    'Alex Len ': 'אלכס לן',
+
 
 
     // Referees
