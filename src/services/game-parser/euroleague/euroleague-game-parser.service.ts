@@ -228,7 +228,7 @@ export class euroleagueGameParserService extends BaseService implements IEurolea
                         const player = players[i]
                         if (!player || !td) return
 
-                        const [a, s] = td.textContent!.split('/').map(v => parseInt(v, 10))
+                        const [s, a] = td.textContent!.split('/').map(v => parseInt(v, 10))
                         player.fieldThrowsAttempt = a
                         player.fieldThrowsScored = s
                     })
@@ -238,7 +238,7 @@ export class euroleagueGameParserService extends BaseService implements IEurolea
                         const player = players[i]
                         if (!player || !td) return
 
-                        const [a, s] = td.textContent!.split('/').map(v => parseInt(v, 10))
+                        const [s, a] = td.textContent!.split('/').map(v => parseInt(v, 10))
                         player.threeThrowsAttempt = a
                         player.threeThrowsScored = s
                     })
@@ -248,7 +248,7 @@ export class euroleagueGameParserService extends BaseService implements IEurolea
                         const player = players[i]
                         if (!player || !td) return
 
-                        const [a, s] = td.textContent!.split('/').map(v => parseInt(v, 10))
+                        const [s, a] = td.textContent!.split('/').map(v => parseInt(v, 10))
                         player.freeThrowsAttempt = a
                         player.freeThrowsScored = s
                     })

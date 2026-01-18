@@ -280,6 +280,7 @@ export const ENG_TO_HEB_PERSON_NAME_MAP: { [key: string]: string } = {
     'Sergio Llull ': 'סרחיו יוי',
     'Andres Feliz ': 'אנדרס פליס',
     'Alex Len ': 'אלכס לן',
+    'Dovydas Giedraitis': 'דווידאס גדרייטיס',
 
 
 
@@ -326,4 +327,5 @@ export const ENG_TO_HEB_PERSON_NAME_MAP: { [key: string]: string } = {
     'Robert Vyklicky': 'רוברט ויקליצקי',
     'Hugues Thepenier': 'איג תפנייה',
     'Stefan Calic': 'סטפן קאליץ\'',
+    'Rain Peerandi': 'ראין פיראנדי'
 }
