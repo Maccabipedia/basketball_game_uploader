@@ -16,7 +16,7 @@ export const ENG_TO_HEB_PERSON_NAME_MAP: { [key: string]: string } = {
     'Paolo Galbiati': 'פאולו גלביאטי',
     'Saras Jasikevicius': 'שארונאס יאסיקביצ\'יוס',
     'Vassilis Spanoulis': 'ואסיליס ספאנוליס',
-    'sasa obradovic': 'סשה אוברדוביץ\'',
+    'Sasa Obradovic': 'סשה אוברדוביץ\'',
     'Ergin Ataman': 'ארגין אטאמן',
     'Sergio Scariolo': 'סרג\'יו סקאריולו',
     'Georgios Bartzokas': 'גאורגיס ברצוקאס',
@@ -42,6 +42,7 @@ export const ENG_TO_HEB_PERSON_NAME_MAP: { [key: string]: string } = {
     'Zachary Hankins': 'זאק הנקינס',
     'Tamir Blatt': 'תמיר בלאט',
     'Gur Lavi': 'גור לביא',
+    'Tamir Gold': 'תמיר גולד',
 
 
     // Opponent players
@@ -281,7 +282,21 @@ export const ENG_TO_HEB_PERSON_NAME_MAP: { [key: string]: string } = {
     'Andres Feliz ': 'אנדרס פליס',
     'Alex Len ': 'אלכס לן',
     'Dovydas Giedraitis': 'דווידאס גדרייטיס',
-
+    'Thomas Walkup': 'תומאס וולקאפ',
+    'Shaquielle Mckissic': 'שאקיל מקיסיק',
+    'Evan Fournier': 'אוון פורנייה',
+    'Neal Sako': 'ניל סאקו',
+    'Xabi Lopez Arostegui': 'צ\'אבייר לופס-ארוסטגי',
+    'Mitar Bosnjakovic': 'מיטאר בושניאקוביץ\'',
+    'Uros Mijailovic': 'אורוש מייאילוביץ\'',
+    'Aleksej Pokusevski': 'אלכסיי פוקושבסקי',
+    'Aleksa Radanov': 'אלכסה רדנוב',
+    'Tonye Jekiri': 'טוניה ג\'קירי',
+    'Joel Bolomboy': 'ג\'ואל בולומבוי',
+    'Jordan Nwora': 'ג\'ורדן נוורה',
+    'Isiaha Mike': 'איסיאהה מייק',
+    'Neno Dimitrijevic': 'ננו דימיטרייביץ\'',
+    '': '',
 
 
     // Referees
@@ -327,5 +342,7 @@ export const ENG_TO_HEB_PERSON_NAME_MAP: { [key: string]: string } = {
     'Robert Vyklicky': 'רוברט ויקליצקי',
     'Hugues Thepenier': 'איג תפנייה',
     'Stefan Calic': 'סטפן קאליץ\'',
-    'Rain Peerandi': 'ראין פיראנדי'
+    'Rain Peerandi': 'ראין פיראנדי',
+    'Josip Radojkovic': 'יוסיפ רדויקוביץ\'',
+    'Gentian Cici': 'ג׳נטיאן סיסי'
 }
