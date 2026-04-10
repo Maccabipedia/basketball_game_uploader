@@ -26,6 +26,7 @@ export const ENG_TO_HEB_PERSON_NAME_MAP: { [key: string]: string } = {
     'Igor Kokoskov': 'איגור קוקושקוב',
     'Svetislav Pesic': 'סבטיסלב פשיץ\'',
     'Xavi Pascual': 'צ\'אבי פסקואל',
+    '': '',
 
 
     // Maccabi players
@@ -43,6 +44,7 @@ export const ENG_TO_HEB_PERSON_NAME_MAP: { [key: string]: string } = {
     'Tamir Blatt': 'תמיר בלאט',
     'Gur Lavi': 'גור לביא',
     'Tamir Gold': 'תמיר גולד',
+    'Amit Ebo': 'עמית עבו',
 
 
     // Opponent players
@@ -296,6 +298,25 @@ export const ENG_TO_HEB_PERSON_NAME_MAP: { [key: string]: string } = {
     'Jordan Nwora': 'ג\'ורדן נוורה',
     'Isiaha Mike': 'איסיאהה מייק',
     'Neno Dimitrijevic': 'ננו דימיטרייביץ\'',
+    'Chris Silva': 'כריס סילבה',
+    'Paul Eboua': 'פול אבואה',
+    'Adam Atamna': 'אדם אטאמאה',
+    'Braian Angola': 'בריאן אנגולה',
+    'Edwin Jackson': 'אדווין ג׳קסון',
+    'Armel Traore': 'ארמל טראורה',
+    'Dwayne Bacon': 'דוויין בייקון',
+    'Klemen Prepelic': 'קלמן פרפליץ\'',
+    'Dzanan Musa': 'דז\'נאן מוסא',
+    'Bruno Caboclo': 'ברונו קבוקלו',
+    'Eugene Omoruyi': 'יוג\'ין אומורויי',
+    'Trent Forrest': 'טרנט פורסט',
+    'Gytis Radzevicius': 'גיטיס רדזביצ\'יוס',
+    'Vit Hrabar': 'ויט גרבר',
+    'Stefan Joksimovic ': 'סטפן יוקסימוביץ\'',
+    'Jared Rhoden': 'ג\'ארד רודן',
+    'Lamar Stevens': 'למאר סטיבנס',
+    'Daulton Hommes': 'דאולטון הומס',
+    '': '',
     '': '',
 
 
@@ -344,5 +365,8 @@ export const ENG_TO_HEB_PERSON_NAME_MAP: { [key: string]: string } = {
     'Stefan Calic': 'סטפן קאליץ\'',
     'Rain Peerandi': 'ראין פיראנדי',
     'Josip Radojkovic': 'יוסיפ רדויקוביץ\'',
-    'Gentian Cici': 'ג׳נטיאן סיסי'
+    'Gentian Cici': 'ג׳נטיאן סיסי',
+    'Alberto Baena': 'אלברטו באנה',
+    'Mehdi Difallah': 'מהדי דיפאללה',
+    '': '',
 }

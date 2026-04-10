@@ -14,7 +14,8 @@ export const ENG_TO_HEB_STADIUM_NAME_MAP: { [key: string]: string } = {
     'MOVISTAR ARENA': 'ארמון הספורט של קהילת מדריד',
     'PEACE AND FRIENDSHIP STADIUM': 'היכל השלום והאחווה',
     'ROIG ARENA': 'רואיג ארנה',
-    '': '',
-    '': '',
+    'ASTROBALLE ': 'אסטרובל',
+    'BUESA ARENA': 'פרננדו בואסה ארנה',
+    'ADIDAS ARENA': 'ארנה פורט דה לה שאפל',
     '': '',
 }
